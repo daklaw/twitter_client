@@ -42,6 +42,11 @@
              success:(void (^)(AFHTTPRequestOperation *operation, id response))success
              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 
+- (void)replyTweet:(NSString *)text
+           tweetID:(NSString *)tweetID
+           success:(void (^)(AFHTTPRequestOperation *operation, id response))success
+           failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
+
 - (void)destroyTweet:(NSString *)tweetID
              success:(void (^)(AFHTTPRequestOperation *operation, id response))success
              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;

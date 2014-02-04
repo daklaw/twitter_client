@@ -11,4 +11,5 @@
 @interface ComposeViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITextView *tweetTextView;
 
+- (id)initWithReply:(Tweet *)tweet;
 @end

@@ -11,6 +11,8 @@
 @interface ComposeViewController ()
 - (void) onCancel;
 - (void) onTweet;
+
+@property (nonatomic, strong) Tweet *replyTo;
 @end
 
 @implementation ComposeViewController
@@ -21,6 +23,14 @@
     if (self) {
         // Custom initialization
     }
+    return self;
+}
+
+- (id)initWithReply:(Tweet *)tweet {
+    if (self = [super init]) {
+        self.replyTo = tweet;
+    }
+    
     return self;
 }
 
@@ -37,6 +47,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.tweetTextView.text = @"";
+    if (self.replyTo) {
+        self.tweetTextView.text = [NSString stringWithFormat:@"%@ ", self.replyTo.screenName];
+    }
     [self.tweetTextView becomeFirstResponder];
 }
 
@@ -51,15 +64,27 @@
 }
 
 - (void) onTweet {
-    [[TwitterClient instance] composeTweet:self.tweetTextView.text success:^(AFHTTPRequestOperation *operation, id response) {
-        Tweet *tweet = [[Tweet alloc] initWithDictionary:response];
-        NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-        [userInfo setObject:tweet forKey:@"tweet"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:UserDidTweetNotification object:self userInfo:userInfo];
+    if (self.replyTo) {
+        [[TwitterClient instance] replyTweet:self.tweetTextView.text tweetID:self.replyTo.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
+            Tweet *tweet = [[Tweet alloc] initWithDictionary:response];
+            NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+            [userInfo setObject:tweet forKey:@"tweet"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:UserDidTweetNotification object:self userInfo:userInfo];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Unsuccessful reply: %@", error);
+        }];
     }
-                                   failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Unsuccessful tweet: %@", error);
-                                   }];
+    else {
+        [[TwitterClient instance] composeTweet:self.tweetTextView.text success:^(AFHTTPRequestOperation *operation, id response) {
+            Tweet *tweet = [[Tweet alloc] initWithDictionary:response];
+            NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+            [userInfo setObject:tweet forKey:@"tweet"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:UserDidTweetNotification object:self userInfo:userInfo];
+        }
+                                       failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Unsuccessful tweet: %@", error);
+        }];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

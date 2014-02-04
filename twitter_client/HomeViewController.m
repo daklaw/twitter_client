@@ -198,6 +198,11 @@
 
 - (void)onReply:(UIButton *)sender {
     NSLog(@"onReply: %d", sender.tag);
+    Tweet *tweet = self.tweets[sender.tag];
+    
+    ComposeViewController *composeViewController = [[ComposeViewController alloc] initWithReply:tweet];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:composeViewController];
+    [self presentViewController:navigationController animated:YES completion:nil];
 }
 
 -(void)onRetweet:(UIButton *)sender {
