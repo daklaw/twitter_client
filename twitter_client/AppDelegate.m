@@ -7,6 +7,18 @@
 //
 
 #import "AppDelegate.h"
+#import "AuthViewController.h"
+#import "HomeViewController.h"
+
+@interface AppDelegate ()
+
+- (void)updateRootVC;
+
+@property (nonatomic, strong) AuthViewController *authViewController;
+@property (nonatomic, strong) UINavigationController *homeViewController;
+@property (nonatomic, strong) UIViewController *currentVC;
+
+@end
 
 @implementation AppDelegate
 
@@ -16,6 +28,21 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    AuthViewController *authViewController = [[AuthViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:authViewController];
+    
+    self.window.rootViewController = navigationController;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRootVC) name:UserDidLoginNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRootVC) name:UserDidLogoutNotification object:nil];
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    NSNotification *notification = [NSNotification notificationWithName:kAFApplicationLaunchedWithURLNotification object:nil userInfo:[NSDictionary dictionaryWithObject:url forKey:kAFApplicationLaunchOptionsURLKey]];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    
     return YES;
 }
 
@@ -44,6 +71,37 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark - Private Methods
+
+- (UIViewController *) currentVC {
+    if ([User currentUser]) {
+        return self.homeViewController;
+    } else {
+        return self.authViewController;
+    }
+}
+
+- (UINavigationController *)homeViewController {
+    if (!_homeViewController) {
+        HomeViewController *homeViewController = [[HomeViewController alloc] init];
+        _homeViewController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+    }
+    
+    return _homeViewController;
+}
+
+- (AuthViewController *)authViewController {
+    if (!_authViewController) {
+        _authViewController = [[AuthViewController alloc] init];
+    }
+    
+    return _authViewController;
+}
+
+- (void)updateRootVC {
+    self.window.rootViewController = self.currentVC;
 }
 
 @end
