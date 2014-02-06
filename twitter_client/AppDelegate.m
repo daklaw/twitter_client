@@ -43,9 +43,8 @@
         [User setCurrentUser:[[User alloc] initWithDictionary:response]];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         AuthViewController *authViewController = [[AuthViewController alloc] init];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:authViewController];
         
-        self.window.rootViewController = navigationController;
+        self.window.rootViewController = authViewController;
     }];
     
     return YES;
