@@ -26,7 +26,6 @@ static User *_currentUser;
             _currentUser = [[User alloc] initWithDictionary:userDictionary];
         }
     }
-    
     return _currentUser;
 }
 
@@ -47,6 +46,23 @@ static User *_currentUser;
         _currentUser = currentUser; // Needs to be set before firing the notification
         [[NSNotificationCenter defaultCenter] postNotificationName:UserDidLogoutNotification object:nil];
     }
+}
+
+- (NSURL *)profilePictureURL {
+    NSString *url = [self.data valueOrNilForKeyPath:@"profile_image_url_https"];
+    if (url) {
+        return [NSURL URLWithString:url];
+    }
+    
+    return nil;
+}
+
+- (NSString *)name {
+    return [self.data valueOrNilForKeyPath:@"name"];
+}
+
+- (NSString *)screenName {
+    return [NSString stringWithFormat:@"@%@", [self.data valueOrNilForKeyPath:@"screen_name"]];
 }
 
 @end

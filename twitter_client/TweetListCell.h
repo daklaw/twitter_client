@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface TweetListCell : UITableViewCell
+@property (strong, nonatomic) IBOutlet UILabel *optionalHeaderLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *profilePicture;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
@@ -18,5 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *replyButton;
 @property (weak, nonatomic) IBOutlet UIButton *retweetButton;
 @property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *retweetHeightConstraint;
+
 
 @end

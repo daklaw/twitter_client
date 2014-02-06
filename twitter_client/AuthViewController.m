@@ -12,6 +12,7 @@
 
 - (IBAction)onLoginButton:(id)sender;
 - (void)onError;
+- (void)getUserFromAccessToken;
 
 @end
 
@@ -29,6 +30,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self getUserFromAccessToken];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -40,14 +42,17 @@
 
 - (IBAction)onLoginButton:(id)sender {
     [[TwitterClient instance] authorizeWithCallbackUrl:[NSURL URLWithString:@"dl-twitter://success"] success:^(AFOAuth1Token *accessToken, id responseObject) {
-        [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
-            [User setCurrentUser:[[User alloc] initWithDictionary:response]];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            [self onError];
-        }];
+        [self getUserFromAccessToken];
         NSLog(@"success!");
     } failure:^(NSError *error) {
         [self onError];
+    }];
+}
+
+- (void)getUserFromAccessToken {
+    [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
+        [User setCurrentUser:[[User alloc] initWithDictionary:response]];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
     }];
 }
 

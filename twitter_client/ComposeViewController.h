@@ -10,6 +10,9 @@
 
 @interface ComposeViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UITextView *tweetTextView;
+@property (strong, nonatomic) IBOutlet UIImageView *profilePicture;
+@property (strong, nonatomic) IBOutlet UILabel *nameLabel;
+@property (strong, nonatomic) IBOutlet UILabel *screenNameLabel;
 
 - (id)initWithReply:(Tweet *)tweet;
 @end

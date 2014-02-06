@@ -54,13 +54,13 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
 
 #pragma mark - Statuses API
 
-- (void)homeTimelineWithCount:(int)count sinceId:(int)sinceId maxId:(int)maxId success:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+- (void)homeTimelineWithCount:(int)count sinceId:(NSString *) sinceId maxId:(NSString *)maxId success:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:@{@"count": @(count)}];
-    if (sinceId > 0) {
-        [params setObject:@(sinceId) forKey:@"since_id"];
+    if (![sinceId  isEqualToString:@"0"]) {
+        [params setObject:sinceId forKey:@"since_id"];
     }
-    if (maxId > 0) {
-        [params setObject:@(maxId) forKey:@"max_id"];
+    if (![maxId isEqualToString:@"0"]) {
+        [params setObject:maxId forKey:@"max_id"];
     }
     [params setObject:@"true" forKey:@"include_my_retweet"];
     
@@ -76,7 +76,6 @@ static NSString * const kAccessTokenKey = @"kAccessTokenKey";
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     [params setObject:tweetId forKey:@"id"];
     
-    NSLog(@"Parameters: %@", params);
     NSString *path = [NSString stringWithFormat:@"1.1/favorites/create.json"];
     
     [self postPath:path parameters:params success:success failure:failure];

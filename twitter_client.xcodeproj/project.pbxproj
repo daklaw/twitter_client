@@ -21,6 +21,17 @@
 		C530E039189DAC080026AD00 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C530E021189DAC080026AD00 /* UIKit.framework */; };
 		C530E041189DAC080026AD00 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C530E03F189DAC080026AD00 /* InfoPlist.strings */; };
 		C530E043189DAC080026AD00 /* twitter_clientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C530E042189DAC080026AD00 /* twitter_clientTests.m */; };
+		C53AFBAF18A30765009217D6 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBAE18A30765009217D6 /* Parse.framework */; };
+		C53AFBB918A3083D009217D6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB018A3083C009217D6 /* AudioToolbox.framework */; };
+		C53AFBBA18A3083D009217D6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB118A3083C009217D6 /* CFNetwork.framework */; };
+		C53AFBBB18A3083D009217D6 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB218A3083C009217D6 /* CoreLocation.framework */; };
+		C53AFBBC18A3083D009217D6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB318A3083C009217D6 /* libz.dylib */; };
+		C53AFBBD18A3083D009217D6 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB418A3083C009217D6 /* MobileCoreServices.framework */; };
+		C53AFBBE18A3083D009217D6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB518A3083C009217D6 /* QuartzCore.framework */; };
+		C53AFBBF18A3083D009217D6 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB618A3083C009217D6 /* Security.framework */; };
+		C53AFBC018A3083D009217D6 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB718A3083C009217D6 /* StoreKit.framework */; };
+		C53AFBC118A3083D009217D6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBB818A3083D009217D6 /* SystemConfiguration.framework */; };
+		C53AFBC318A30BBE009217D6 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C53AFBC218A30BBE009217D6 /* FacebookSDK.framework */; };
 		C53CC551189DCED6006AECDA /* AuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C53CC54F189DCED6006AECDA /* AuthViewController.m */; };
 		C53CC552189DCED6006AECDA /* AuthViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C53CC550189DCED6006AECDA /* AuthViewController.xib */; };
 		C53CC555189DD5D8006AECDA /* TwitterClient.m in Sources */ = {isa = PBXBuildFile; fileRef = C53CC554189DD5D8006AECDA /* TwitterClient.m */; };
@@ -31,8 +42,6 @@
 		C53CC5AC189E2B0E006AECDA /* NSDictionary+CPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C53CC5AB189E2B0E006AECDA /* NSDictionary+CPAdditions.m */; };
 		C53CC5B0189E3BA2006AECDA /* TweetListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C53CC5AF189E3BA2006AECDA /* TweetListCell.m */; };
 		C53CC5B2189E3BC1006AECDA /* TweetListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C53CC5B1189E3BC1006AECDA /* TweetListCell.xib */; };
-		C53CC5B8189F6B14006AECDA /* TweetDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C53CC5B7189F6B14006AECDA /* TweetDetailCell.m */; };
-		C53CC5BA189F6C9E006AECDA /* TweetDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C53CC5B9189F6C9E006AECDA /* TweetDetailCell.xib */; };
 		C53CC5C1189F86C0006AECDA /* TweetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C53CC5BF189F86C0006AECDA /* TweetViewController.m */; };
 		C53CC5C2189F86C0006AECDA /* TweetViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C53CC5C0189F86C0006AECDA /* TweetViewController.xib */; };
 		F7324F5C48C5462B852114ED /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D523904ACB545419FE565B9 /* libPods.a */; };
@@ -69,6 +78,17 @@
 		C530E03E189DAC080026AD00 /* twitter_clientTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "twitter_clientTests-Info.plist"; sourceTree = "<group>"; };
 		C530E040189DAC080026AD00 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C530E042189DAC080026AD00 /* twitter_clientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = twitter_clientTests.m; sourceTree = "<group>"; };
+		C53AFBAE18A30765009217D6 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = ../Parse.framework; sourceTree = "<group>"; };
+		C53AFBB018A3083C009217D6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		C53AFBB118A3083C009217D6 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		C53AFBB218A3083C009217D6 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		C53AFBB318A3083C009217D6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		C53AFBB418A3083C009217D6 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		C53AFBB518A3083C009217D6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C53AFBB618A3083C009217D6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		C53AFBB718A3083C009217D6 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		C53AFBB818A3083D009217D6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		C53AFBC218A30BBE009217D6 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		C53CC54E189DCED6006AECDA /* AuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthViewController.h; sourceTree = "<group>"; };
 		C53CC54F189DCED6006AECDA /* AuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthViewController.m; sourceTree = "<group>"; };
 		C53CC550189DCED6006AECDA /* AuthViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthViewController.xib; sourceTree = "<group>"; };
@@ -88,9 +108,6 @@
 		C53CC5AE189E3BA2006AECDA /* TweetListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetListCell.h; sourceTree = "<group>"; };
 		C53CC5AF189E3BA2006AECDA /* TweetListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetListCell.m; sourceTree = "<group>"; };
 		C53CC5B1189E3BC1006AECDA /* TweetListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetListCell.xib; sourceTree = "<group>"; };
-		C53CC5B6189F6B14006AECDA /* TweetDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetDetailCell.h; sourceTree = "<group>"; };
-		C53CC5B7189F6B14006AECDA /* TweetDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetDetailCell.m; sourceTree = "<group>"; };
-		C53CC5B9189F6C9E006AECDA /* TweetDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetDetailCell.xib; sourceTree = "<group>"; };
 		C53CC5BE189F86C0006AECDA /* TweetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetViewController.h; sourceTree = "<group>"; };
 		C53CC5BF189F86C0006AECDA /* TweetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetViewController.m; sourceTree = "<group>"; };
 		C53CC5C0189F86C0006AECDA /* TweetViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetViewController.xib; sourceTree = "<group>"; };
@@ -102,10 +119,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C53AFBB918A3083D009217D6 /* AudioToolbox.framework in Frameworks */,
+				C53AFBBA18A3083D009217D6 /* CFNetwork.framework in Frameworks */,
+				C53AFBBB18A3083D009217D6 /* CoreLocation.framework in Frameworks */,
+				C53AFBBC18A3083D009217D6 /* libz.dylib in Frameworks */,
+				C53AFBBD18A3083D009217D6 /* MobileCoreServices.framework in Frameworks */,
+				C53AFBBE18A3083D009217D6 /* QuartzCore.framework in Frameworks */,
+				C53AFBBF18A3083D009217D6 /* Security.framework in Frameworks */,
+				C53AFBC018A3083D009217D6 /* StoreKit.framework in Frameworks */,
+				C53AFBC118A3083D009217D6 /* SystemConfiguration.framework in Frameworks */,
 				C530E020189DAC080026AD00 /* CoreGraphics.framework in Frameworks */,
 				C530E022189DAC080026AD00 /* UIKit.framework in Frameworks */,
+				C53AFBC318A30BBE009217D6 /* FacebookSDK.framework in Frameworks */,
 				C530E01E189DAC080026AD00 /* Foundation.framework in Frameworks */,
 				F7324F5C48C5462B852114ED /* libPods.a in Frameworks */,
+				C53AFBAF18A30765009217D6 /* Parse.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +173,17 @@
 		C530E01C189DAC080026AD00 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C53AFBC218A30BBE009217D6 /* FacebookSDK.framework */,
+				C53AFBB018A3083C009217D6 /* AudioToolbox.framework */,
+				C53AFBB118A3083C009217D6 /* CFNetwork.framework */,
+				C53AFBB218A3083C009217D6 /* CoreLocation.framework */,
+				C53AFBB318A3083C009217D6 /* libz.dylib */,
+				C53AFBB418A3083C009217D6 /* MobileCoreServices.framework */,
+				C53AFBB518A3083C009217D6 /* QuartzCore.framework */,
+				C53AFBB618A3083C009217D6 /* Security.framework */,
+				C53AFBB718A3083C009217D6 /* StoreKit.framework */,
+				C53AFBB818A3083D009217D6 /* SystemConfiguration.framework */,
+				C53AFBAE18A30765009217D6 /* Parse.framework */,
 				C530E01D189DAC080026AD00 /* Foundation.framework */,
 				C530E01F189DAC080026AD00 /* CoreGraphics.framework */,
 				C530E021189DAC080026AD00 /* UIKit.framework */,
@@ -228,9 +267,6 @@
 				C53CC5AE189E3BA2006AECDA /* TweetListCell.h */,
 				C53CC5AF189E3BA2006AECDA /* TweetListCell.m */,
 				C53CC5B1189E3BC1006AECDA /* TweetListCell.xib */,
-				C53CC5B6189F6B14006AECDA /* TweetDetailCell.h */,
-				C53CC5B7189F6B14006AECDA /* TweetDetailCell.m */,
-				C53CC5B9189F6C9E006AECDA /* TweetDetailCell.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -353,7 +389,6 @@
 				C530E030189DAC080026AD00 /* Images.xcassets in Resources */,
 				C51B194118A0C29C00FF9AD2 /* ComposeViewController.xib in Resources */,
 				C53CC5B2189E3BC1006AECDA /* TweetListCell.xib in Resources */,
-				C53CC5BA189F6C9E006AECDA /* TweetDetailCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,7 +448,6 @@
 				C53CC561189DFADB006AECDA /* Tweet.m in Sources */,
 				C53CC564189DFB96006AECDA /* RestObject.m in Sources */,
 				C53CC551189DCED6006AECDA /* AuthViewController.m in Sources */,
-				C53CC5B8189F6B14006AECDA /* TweetDetailCell.m in Sources */,
 				C530E02A189DAC080026AD00 /* main.m in Sources */,
 				C51B194018A0C29C00FF9AD2 /* ComposeViewController.m in Sources */,
 				C53CC55E189DFA35006AECDA /* HomeViewController.m in Sources */,
@@ -537,9 +571,25 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/davidlaw/data/ios,
+					/Documents/FacebookSDK,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "twitter_client/twitter_client-Prefix.pch";
 				INFOPLIST_FILE = "twitter_client/twitter_client-Info.plist";
+				OTHER_LDFLAGS = (
+					"-framework",
+					CoreGraphics,
+					"-framework",
+					MobileCoreServices,
+					"-framework",
+					Security,
+					"-framework",
+					SystemConfiguration,
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -551,9 +601,25 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/davidlaw/data/ios,
+					/Documents/FacebookSDK,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "twitter_client/twitter_client-Prefix.pch";
 				INFOPLIST_FILE = "twitter_client/twitter_client-Info.plist";
+				OTHER_LDFLAGS = (
+					"-framework",
+					CoreGraphics,
+					"-framework",
+					MobileCoreServices,
+					"-framework",
+					Security,
+					"-framework",
+					SystemConfiguration,
+					"-ObjC",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

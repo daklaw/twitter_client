@@ -7,6 +7,7 @@
 //
 
 #import "ComposeViewController.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface ComposeViewController ()
 - (void) onCancel;
@@ -43,13 +44,26 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Tweet"
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
-                                                                             action:@selector(onTweet)];
+                                                                            action:@selector(onTweet)];
+    // So the Navigation Controller does not overlay on the interface
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    User *user = [User currentUser];
+    [self.profilePicture setImageWithURL:[user profilePictureURL]];
+    self.screenNameLabel.text = [user screenName];
+    self.nameLabel.text = [user name];
+    
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view from its nib.
     self.tweetTextView.text = @"";
     if (self.replyTo) {
-        self.tweetTextView.text = [NSString stringWithFormat:@"%@ ", self.replyTo.screenName];
+        self.tweetTextView.text = [NSString stringWithFormat:@"%@ ", [self.replyTo screenName]];
     }
+    
+    
+     
     [self.tweetTextView becomeFirstResponder];
 }
 

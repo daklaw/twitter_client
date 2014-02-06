@@ -21,6 +21,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *retweetTextLabel;
 @property (weak, nonatomic) IBOutlet UILabel *numFavoriteLabel;
 @property (weak, nonatomic) IBOutlet UILabel *favoriteTextLabel;
+@property (strong, nonatomic) IBOutlet UILabel *optionalHeaderLabel;
+@property (strong, nonatomic) IBOutlet UILabel *timestampLabel;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *retweetHeightConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *heightConstraint;
+
+
 - (id)initWithTweet:(Tweet *)tweet;
 
 @end

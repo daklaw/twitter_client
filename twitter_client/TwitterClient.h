@@ -21,8 +21,8 @@
 // Statuses API
 
 - (void)homeTimelineWithCount:(int)count
-                      sinceId:(int)sinceId
-                        maxId:(int)maxId
+                      sinceId:(NSString *)sinceId
+                        maxId:(NSString *) maxId
                       success:(void (^)(AFHTTPRequestOperation *operation, id response))success
                       failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure;
 

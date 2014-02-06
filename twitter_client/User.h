@@ -18,7 +18,9 @@ extern NSString *const UserDidTweetNotification;
 
 + (User *)currentUser;
 + (void)setCurrentUser:(User *)currentUser;
-- (id)initWithDictionary:(NSDictionary *)data;
+- (NSURL *)profilePictureURL;
+- (NSString *)name;
+- (NSString *)screenName;
 
 @property (nonatomic, strong) NSDictionary *data;
 

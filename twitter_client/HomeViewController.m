@@ -23,6 +23,9 @@
 - (void)onReply: (UIButton *) sender;
 - (void)onFavorite: (UIButton *) sender;
 - (void)reload;
+- (void)fetchMoreTweets;
+- (void)saveTweets;
+- (void)popupModalController:(UIViewController *)viewController;
 
 @end
 
@@ -33,16 +36,21 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-        self.title = @"Twitter";
+        self.title = @"Home";
         
-        [self reload];
     }
     return self;
 }
 
 - (void)viewDidLoad
 {
+    [self retrieveTweetsFromDisk];
+    if ([self.tweets count] == 0) {
+        [self reload];
+    }
+    
     [super viewDidLoad];
+    
     UINib *customNib = [UINib nibWithNibName:@"TweetListCell" bundle:nil];
     [self.tableView registerNib:customNib forCellReuseIdentifier:@"TweetListCell"];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign Out"
@@ -54,12 +62,15 @@
                                                                              target:self
                                                                              action:@selector(onComposeButton)];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimeline:) name:UserDidTweetNotification object:nil];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
+                                        init];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Reloading Tweets"];
+    [refreshControl addTarget:self action:@selector(reload) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refreshControl;
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning
@@ -88,14 +99,22 @@
     TweetListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     Tweet *tweet = self.tweets[indexPath.row];
     
+
+    
     cell.tweetLabel.text = tweet.text;
     cell.tweetLabel.numberOfLines = 0;
-    [cell.tweetLabel sizeToFit];
     cell.tweetLabel.lineBreakMode = NSLineBreakByWordWrapping;
     cell.nameLabel.text = tweet.name;
     cell.screenNameLabel.text = tweet.screenName;
-    [cell.profilePicture setImageWithURL:tweet.profileImageURL];
+    [cell.profilePicture setImageWithURL:[tweet profileImageURL]];
     cell.timeSinceLabel.text = [tweet timeSinceStr];
+    
+    if (tweet.isRetweet) {
+        cell.optionalHeaderLabel.text = [tweet retweetHeaderText];
+    }
+    else {
+        cell.retweetHeightConstraint.constant = 0;
+    }
     
     // Configure the buttons
     // Retweet setBackgroundImages
@@ -126,7 +145,20 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 150.0f;
+    static NSString *CellIdentifier = @"TweetListCell";
+    TweetListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    UILabel *tweetLabel = cell.tweetLabel;
+    
+    Tweet *tweet = self.tweets[indexPath.row];
+    CGRect expectedFrame = [tweet.text boundingRectWithSize:CGSizeMake(tweetLabel.frame.size.width, CGFLOAT_MAX)
+                                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                                    attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                tweetLabel.font, NSFontAttributeName,
+                                                                nil]
+                                                       context:nil];
+
+    return ceil(expectedFrame.size.height + 70.0f);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -134,56 +166,21 @@
     [self.navigationController pushViewController:tweetViewController animated:YES];
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a story board-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    float endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height;
+    if (endScrolling >= scrollView.contentSize.height)
+    {
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        
+        spinner.frame=CGRectMake(0,0,50,50);
+        [spinner startAnimating];
+        
+        self.tableView.tableFooterView=spinner;
+        [self fetchMoreTweets];
+    }
 }
 
- */
 
 - (void)onSignOutButton {
     [User setCurrentUser:nil];
@@ -191,17 +188,21 @@
 
 - (void)onComposeButton {
     ComposeViewController *composeViewController = [[ComposeViewController alloc] init];
-
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:composeViewController];
-    [self presentViewController:navigationController animated:YES completion:nil];
+    [self popupModalController:composeViewController];
 }
 
 - (void)onReply:(UIButton *)sender {
-    NSLog(@"onReply: %d", sender.tag);
     Tweet *tweet = self.tweets[sender.tag];
     
-    ComposeViewController *composeViewController = [[ComposeViewController alloc] initWithReply:tweet];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:composeViewController];
+    ComposeViewController *replyViewController = [[ComposeViewController alloc] initWithReply:tweet];
+    [self popupModalController:replyViewController];
+}
+
+- (void)popupModalController:(UIViewController *)viewController {
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+    navigationController.navigationBar.barTintColor = [UIColor colorWithRed:(85/255.0) green:(172/255.0) blue:(238/255.0) alpha:1.0];
+    navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
@@ -233,6 +234,7 @@
             NSLog(@"Unsucccessful retweet: %@", error);
         }];
     }
+    [self saveTweets];
     [self.tableView reloadData];
 }
 
@@ -261,14 +263,50 @@
             NSLog(@"Favorite unsuccessful!: %@", error);
         }];
     };
+    [self saveTweets];
     [self.tableView reloadData];
 }
 
 - (void)reload {
-    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:0 maxId:0 success:^(AFHTTPRequestOperation *operation, id response) {
+    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:@"0" maxId:@"0" success:^(AFHTTPRequestOperation *operation, id response) {
         self.tweets = [Tweet tweetsWithArray:response];
         [self.tableView reloadData];
+        [self saveTweets];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        // Do nothing
+    }];
+    [self.refreshControl endRefreshing];
+}
+
+- (void)saveTweets {
+    NSLog(@"Saving tweets");
+    NSMutableArray *encodedTweets = [[NSMutableArray alloc] init];
+    for (id tweet in self.tweets) {
+        [encodedTweets addObject:[NSKeyedArchiver archivedDataWithRootObject:tweet]];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:encodedTweets forKey:@"tweets"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)retrieveTweetsFromDisk {
+    NSArray *encodedTweets = [[NSUserDefaults standardUserDefaults] objectForKey:@"tweets"];
+    self.tweets = [[NSMutableArray alloc] initWithCapacity:[encodedTweets count]];
+    if (encodedTweets) {
+        for (id encodedTweet in encodedTweets) {
+            [self.tweets addObject:[NSKeyedUnarchiver unarchiveObjectWithData:encodedTweet]];
+        }
+    }
+}
+
+- (void)fetchMoreTweets {
+    Tweet *lastTweet = [self.tweets lastObject];
+    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:@"0" maxId:lastTweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
+        NSMutableArray *newTweets = [Tweet tweetsWithArray:response];
+        [self.tweets addObjectsFromArray:newTweets];
+        [self.tableView reloadData];
+        [self saveTweets];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failure: %@", error);
         // Do nothing
     }];
 }
@@ -279,7 +317,9 @@
     if (tweet) {
         [self.tweets insertObject:tweet atIndex:0];
         [self.tableView reloadData];
+        [self saveTweets];
     }
 }
+
 
 @end

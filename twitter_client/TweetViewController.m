@@ -7,6 +7,7 @@
 //
 
 #import "TweetViewController.h"
+#import "ComposeViewController.h"
 #import "UIImageView+AFNetworking.h"
 
 @interface TweetViewController ()
@@ -56,12 +57,30 @@
     
     // Do any additional setup after loading the view from its nib.
     self.nameLabel.text = self.tweet.name;
-    self.screenNameLabel.text = self.tweet.screenName;
+    self.screenNameLabel.text = [self.tweet screenName];
     self.tweetLabel.text = self.tweet.text;
     self.numFavoriteLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tweet.numFavorites];
     self.numRetweetLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tweet.numRetweets];
     [self.tweetLabel sizeToFit];
-    [self.profilePicture setImageWithURL:self.tweet.profileImageURL];
+    [self.profilePicture setImageWithURL:[self.tweet profileImageURL]];
+    
+    if (self.tweet.isRetweet) {
+        self.optionalHeaderLabel.text = [self.tweet retweetHeaderText];
+    }
+    else {
+        [self.optionalHeaderLabel removeFromSuperview];
+        self.retweetHeightConstraint.constant = 0;
+    }
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    [formatter setDateFormat:@"M/d/yy hh:mm a"];
+    
+    //Optionally for time zone converstions
+    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+    
+    NSString *stringFromDate = [formatter stringFromDate:self.tweet.createdAt];
+    self.timestampLabel.text = stringFromDate;
     
     // So the Navigation Controller does not overlay on the interface
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
@@ -108,6 +127,9 @@
 }
 
 - (IBAction)onReply:(id)sender {
+    ComposeViewController *composeViewController = [[ComposeViewController alloc] initWithReply:self.tweet];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:composeViewController];
+    [self presentViewController:navigationController animated:YES completion:nil];
 }
 
 - (IBAction)onFavorite:(id)sender {
