@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "RestObject.h"
+#import <Parse/Parse.h>
+#import "Tweet.h"
 
 extern NSString *const UserDidLoginNotification;
 extern NSString *const UserDidLogoutNotification;
@@ -15,6 +17,7 @@ extern NSString *const UserDidTweetNotification;
 
 
 @interface User : RestObject
+
 
 + (User *)currentUser;
 + (void)setCurrentUser:(User *)currentUser;

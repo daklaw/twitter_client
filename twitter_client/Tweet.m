@@ -7,6 +7,7 @@
 //
 
 #import "Tweet.h"
+#import <Parse/Parse.h>
 
 @implementation Tweet
 

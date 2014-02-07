@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RestObject.h"
+#import <Parse/Parse.h>
 
 @interface Tweet : RestObject
 

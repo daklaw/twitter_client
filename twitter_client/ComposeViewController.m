@@ -61,8 +61,6 @@
     if (self.replyTo) {
         self.tweetTextView.text = [NSString stringWithFormat:@"%@ ", [self.replyTo screenName]];
     }
-    
-    
      
     [self.tweetTextView becomeFirstResponder];
 }

@@ -22,13 +22,15 @@
 - (void)onRetweet: (UIButton *) sender;
 - (void)onReply: (UIButton *) sender;
 - (void)onFavorite: (UIButton *) sender;
-- (void)reload;
+- (void)reloadTweets;
 - (void)fetchMoreTweets;
 - (void)saveTweets;
 - (void)popupModalController:(UIViewController *)viewController;
-- (void)connectionError;
+- (void)reloadTable;
+- (void)fetchConnectionError;
 - (void)showConnectionErrorHeader;
 - (void)hideConnectionErrorHeader;
+- (UILabel *)connectionErrorLabel;
 
 @end
 
@@ -39,7 +41,6 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-        self.title = @"Home";
         
     }
     return self;
@@ -49,7 +50,7 @@
 {
     [self retrieveTweetsFromDisk];
     if ([self.tweets count] == 0) {
-        [self reload];
+        [self reloadTweets];
     }
     
     [super viewDidLoad];
@@ -71,9 +72,12 @@
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
                                         init];
     refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Reloading Tweets"];
-    [refreshControl addTarget:self action:@selector(reload) forControlEvents:UIControlEventValueChanged];
+    [refreshControl addTarget:self action:@selector(reloadTweets) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
 
+    // Turn Navigation Title text color to white and set title
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor whiteColor]};
+    self.title = @"Home";
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -240,8 +244,7 @@
             NSLog(@"Unsucccessful retweet: %@", error);
         }];
     }
-    [self saveTweets];
-    [self.tableView reloadData];
+    [self reloadTable];
 }
 
 - (void)onFavorite:(UIButton *)sender {
@@ -269,18 +272,20 @@
             NSLog(@"Favorite unsuccessful!: %@", error);
         }];
     };
-    [self saveTweets];
-    [self.tableView reloadData];
+    [self reloadTable];
 }
 
-- (void)reload {
-    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:@"0" maxId:@"0" success:^(AFHTTPRequestOperation *operation, id response) {
+- (void)reloadTweets {
+    NSString *sinceId = @"0";
+    if (self.tweets) {
+        sinceId = [self.tweets[0] tweetId];
+    }
+    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:sinceId maxId:@"0" success:^(AFHTTPRequestOperation *operation, id response) {
         self.tweets = [Tweet tweetsWithArray:response];
-        [self.tableView reloadData];
-        [self saveTweets];
+        [self reloadTable];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if ([error code] == -1009) {
-            [self connectionError];
+            [self refreshConnectionError];
         }
         // Do nothing
     }];
@@ -288,13 +293,13 @@
 }
 
 - (void)saveTweets {
-    NSLog(@"Saving tweets");
     NSMutableArray *encodedTweets = [[NSMutableArray alloc] init];
     for (id tweet in self.tweets) {
         [encodedTweets addObject:[NSKeyedArchiver archivedDataWithRootObject:tweet]];
     }
     [[NSUserDefaults standardUserDefaults] setObject:encodedTweets forKey:@"tweets"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    //[[User currentUser] addTweetsToParse:self.tweets];
 }
 
 - (void)retrieveTweetsFromDisk {
@@ -312,10 +317,9 @@
     [[TwitterClient instance] homeTimelineWithCount:20 sinceId:@"0" maxId:lastTweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
         NSMutableArray *newTweets = [Tweet tweetsWithArray:response];
         [self.tweets addObjectsFromArray:newTweets];
-        [self.tableView reloadData];
-        [self saveTweets];
+        [self reloadTable];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Failure: %@", error);
+        [self fetchConnectionError];
         // Do nothing
     }];
 }
@@ -325,12 +329,16 @@
     Tweet *tweet = [userInfo objectForKey:@"tweet"];
     if (tweet) {
         [self.tweets insertObject:tweet atIndex:0];
-        [self.tableView reloadData];
-        [self saveTweets];
+        [self reloadTable];
     }
 }
 
-- (void)connectionError {
+- (void)fetchConnectionError {
+    [self.tableView setTableFooterView:[self connectionErrorLabel]];
+}
+
+
+- (void)refreshConnectionError {
     [self showConnectionErrorHeader];
     [NSTimer scheduledTimerWithTimeInterval:2
                                      target:self
@@ -339,7 +347,18 @@
                                     repeats:NO];
 }
 
+
 - (void)showConnectionErrorHeader {
+    [self.tableView setTableHeaderView:[self connectionErrorLabel]];
+}
+
+- (void) hideConnectionErrorHeader {
+    //this is a selector that called automatically after time interval finished
+    [self.tableView setTableHeaderView:nil];
+    [self.tableView reloadData];
+}
+
+- (UILabel *)connectionErrorLabel {
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 20)];
     label.tag = -1009;
     label.textAlignment =  NSTextAlignmentCenter;
@@ -347,14 +366,12 @@
     label.backgroundColor = [UIColor blackColor];
     label.font = [UIFont fontWithName:@"Arial Rounded MT Bold" size:(15.0)];
     label.text = @"No Internet Connection";
-    [self.tableView setTableHeaderView:label];
+    return label;
 }
 
-- (void) hideConnectionErrorHeader {
-    //this is a selector that called automatically after time interval finished
-    UIView *header = [self.view viewWithTag:-1009];
-    [[self.view viewWithTag:-1009] removeFromSuperview];
-    header = nil;
+- (void) reloadTable {
+    [self.tableView reloadData];
+    [self saveTweets];
 }
 
 

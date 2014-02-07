@@ -8,6 +8,8 @@
 
 #import "User.h"
 #import "TwitterClient.h"
+#import <Parse/Parse.h>
+
 
 NSString * const UserDidLoginNotification = @"UserDidLoginNotification";
 NSString * const UserDidLogoutNotification = @"UserDidLogoutNotification";
@@ -21,6 +23,8 @@ static User *_currentUser;
 + (User *)currentUser {
     if (!_currentUser) {
         NSData *userData = [[NSUserDefaults standardUserDefaults] dataForKey:kCurrentUserKey];
+
+
         if (userData) {
             NSDictionary *userDictionary = [NSJSONSerialization JSONObjectWithData:userData options:NSJSONReadingMutableContainers error:nil];
             _currentUser = [[User alloc] initWithDictionary:userDictionary];
