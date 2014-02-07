@@ -26,6 +26,9 @@
 - (void)fetchMoreTweets;
 - (void)saveTweets;
 - (void)popupModalController:(UIViewController *)viewController;
+- (void)connectionError;
+- (void)showConnectionErrorHeader;
+- (void)hideConnectionErrorHeader;
 
 @end
 
@@ -53,6 +56,7 @@
     
     UINib *customNib = [UINib nibWithNibName:@"TweetListCell" bundle:nil];
     [self.tableView registerNib:customNib forCellReuseIdentifier:@"TweetListCell"];
+    
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Sign Out"
                                                                              style:UIBarButtonItemStylePlain
                                                                             target:self
@@ -61,7 +65,9 @@
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(onComposeButton)];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimeline:) name:UserDidTweetNotification object:nil];
+    
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc]
                                         init];
     refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Reloading Tweets"];
@@ -273,6 +279,9 @@
         [self.tableView reloadData];
         [self saveTweets];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if ([error code] == -1009) {
+            [self connectionError];
+        }
         // Do nothing
     }];
     [self.refreshControl endRefreshing];
@@ -319,6 +328,33 @@
         [self.tableView reloadData];
         [self saveTweets];
     }
+}
+
+- (void)connectionError {
+    [self showConnectionErrorHeader];
+    [NSTimer scheduledTimerWithTimeInterval:2
+                                     target:self
+                                   selector:@selector(hideConnectionErrorHeader)
+                                   userInfo:nil
+                                    repeats:NO];
+}
+
+- (void)showConnectionErrorHeader {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 20)];
+    label.tag = -1009;
+    label.textAlignment =  NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor blackColor];
+    label.font = [UIFont fontWithName:@"Arial Rounded MT Bold" size:(15.0)];
+    label.text = @"No Internet Connection";
+    [self.tableView setTableHeaderView:label];
+}
+
+- (void) hideConnectionErrorHeader {
+    //this is a selector that called automatically after time interval finished
+    UIView *header = [self.view viewWithTag:-1009];
+    [[self.view viewWithTag:-1009] removeFromSuperview];
+    header = nil;
 }
 
 
