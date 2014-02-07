@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RestObject.h"
+#import "User.h"
 #import <Parse/Parse.h>
 
 @interface Tweet : RestObject
@@ -27,9 +28,12 @@
 - (NSString *)name;
 - (NSString *)screenName;
 - (NSString *)retweetHeaderText;
+- (NSString *)userId;
 - (NSURL *)profileImageURL;
 - (NSDate *)createdAt;
 - (bool)isRetweet;
+- (bool)canRetweet: (User *)user;
+- (void)favorite:(UIButton *)button;
 
 
 @end

@@ -69,4 +69,8 @@ static User *_currentUser;
     return [NSString stringWithFormat:@"@%@", [self.data valueOrNilForKeyPath:@"screen_name"]];
 }
 
+- (NSString *)userId {
+    return [NSString stringWithFormat:@"%@", [self.data valueOrNilForKeyPath:@"id"] ];
+}
+
 @end

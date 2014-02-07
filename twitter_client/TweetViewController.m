@@ -72,6 +72,11 @@
         self.retweetHeightConstraint.constant = 0;
     }
     
+    
+    if (![self.tweet canRetweet:[User currentUser]]) {
+        [self.retweetButton setEnabled:NO];
+    }
+    
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     [formatter setDateFormat:@"M/d/yy hh:mm a"];

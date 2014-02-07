@@ -24,6 +24,8 @@
 - (void)onFavorite: (UIButton *) sender;
 - (void)reloadTweets;
 - (void)fetchMoreTweets;
+- (void)loadTweetsSince: (NSString *)sinceId numTweets:(int)numTweets;
+- (void)loadTweetsBefore: (NSString *)maxId numTweets:(int)numTweets;
 - (void)saveTweets;
 - (void)popupModalController:(UIViewController *)viewController;
 - (void)reloadTable;
@@ -50,7 +52,7 @@
 {
     [self retrieveTweetsFromDisk];
     if ([self.tweets count] == 0) {
-        [self reloadTweets];
+        [self loadTweetsSince:@"0" numTweets:20];
     }
     
     [super viewDidLoad];
@@ -109,8 +111,6 @@
     TweetListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     Tweet *tweet = self.tweets[indexPath.row];
     
-
-    
     cell.tweetLabel.text = tweet.text;
     cell.tweetLabel.numberOfLines = 0;
     cell.tweetLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -130,6 +130,7 @@
     // Retweet setBackgroundImages
     [cell.retweetButton setBackgroundImage: [UIImage imageNamed:@"retweet.png"] forState:UIControlStateNormal];
     [cell.retweetButton setBackgroundImage: [UIImage imageNamed:@"retweet_on.png"] forState:UIControlStateSelected];
+    [cell.retweetButton setBackgroundImage:nil forState:UIControlStateDisabled];
     
     // Favorite setBackgroundImages
     [cell.favoriteButton setBackgroundImage:[UIImage imageNamed:@"favorite.png"] forState:UIControlStateNormal];
@@ -139,6 +140,10 @@
     // Keep track of whether tweet is already retweeted or favorited
     [cell.retweetButton setSelected:tweet.retweeted];
     [cell.favoriteButton setSelected:tweet.favorited];
+    
+    if ([tweet canRetweet:[User currentUser]]) {
+        [cell.retweetButton setEnabled:NO];
+    }
     
     cell.replyButton.tag = indexPath.row;
     cell.retweetButton.tag = indexPath.row;
@@ -155,6 +160,8 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    float padding = 70.0f;
+    float retweetLabelHeight = 12.0f;
     static NSString *CellIdentifier = @"TweetListCell";
     TweetListCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -168,7 +175,10 @@
                                                                 nil]
                                                        context:nil];
 
-    return ceil(expectedFrame.size.height + 70.0f);
+    if (!tweet.isRetweet) {
+        padding -= retweetLabelHeight;
+    }
+    return ceil(expectedFrame.size.height + padding);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -179,6 +189,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     float endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height;
+    
     if (endScrolling >= scrollView.contentSize.height)
     {
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -190,7 +201,6 @@
         [self fetchMoreTweets];
     }
 }
-
 
 - (void)onSignOutButton {
     [User setCurrentUser:nil];
@@ -249,47 +259,50 @@
 
 - (void)onFavorite:(UIButton *)sender {
     Tweet *tweet = self.tweets[sender.tag];
-    if ([sender isSelected]) {
-        [sender setSelected:NO];
-        tweet.favorited = NO;
-        tweet.numFavorites -= 1;
-        
-        // Unfavorite tweet via Twitter API
-        [[TwitterClient instance] unfavoriteTweet:tweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Unfavorite unsuccessful! %@", error);
-        }];
-    }
-    else {
-        [sender setSelected:YES];
-        
-        tweet.favorited = YES;
-        tweet.numFavorites += 1;
-        
-        // Favorite tweet via Twitter API
-        [[TwitterClient instance] favoriteTweet:tweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Favorite unsuccessful!: %@", error);
-        }];
-    };
+    [tweet favorite:sender];
     [self reloadTable];
 }
 
 - (void)reloadTweets {
     NSString *sinceId = @"0";
     if (self.tweets) {
-        sinceId = [self.tweets[0] tweetId];
+        Tweet *tweet = self.tweets[0];
+        sinceId = tweet.tweetId;
     }
-    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:sinceId maxId:@"0" success:^(AFHTTPRequestOperation *operation, id response) {
-        self.tweets = [Tweet tweetsWithArray:response];
-        [self reloadTable];
+    
+    [self loadTweetsSince:sinceId numTweets:20];
+    [self.refreshControl endRefreshing];
+}
+
+- (void)fetchMoreTweets {
+    Tweet *lastTweet = [self.tweets lastObject];
+    [self loadTweetsBefore:lastTweet.tweetId numTweets:20];
+    [self reloadTable];
+}
+
+- (void)loadTweetsSince: (NSString *)sinceId numTweets:(int)numTweets  {
+    [[TwitterClient instance] homeTimelineWithCount:numTweets sinceId:sinceId maxId:@"0" success:^(AFHTTPRequestOperation *operation, id response) {
+        NSMutableArray *tweets = [Tweet tweetsWithArray:response];
+        for (id tweet in self.tweets) {
+            [tweets addObject:tweet];
+        }
+        self.tweets = tweets;
+        [self.tableView reloadData];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         if ([error code] == -1009) {
             [self refreshConnectionError];
         }
-        // Do nothing
     }];
-    [self.refreshControl endRefreshing];
+}
+
+- (void)loadTweetsBefore: (NSString *)maxId numTweets:(int)numTweets {
+    [[TwitterClient instance] homeTimelineWithCount:numTweets sinceId:@"0" maxId:maxId success:^(AFHTTPRequestOperation *operation, id response) {
+        [self.tweets addObjectsFromArray:[Tweet tweetsWithArray:response]];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if ([error code] == -1009) {
+            [self fetchConnectionError];
+        }
+    }];
 }
 
 - (void)saveTweets {
@@ -299,7 +312,6 @@
     }
     [[NSUserDefaults standardUserDefaults] setObject:encodedTweets forKey:@"tweets"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    //[[User currentUser] addTweetsToParse:self.tweets];
 }
 
 - (void)retrieveTweetsFromDisk {
@@ -310,18 +322,6 @@
             [self.tweets addObject:[NSKeyedUnarchiver unarchiveObjectWithData:encodedTweet]];
         }
     }
-}
-
-- (void)fetchMoreTweets {
-    Tweet *lastTweet = [self.tweets lastObject];
-    [[TwitterClient instance] homeTimelineWithCount:20 sinceId:@"0" maxId:lastTweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
-        NSMutableArray *newTweets = [Tweet tweetsWithArray:response];
-        [self.tweets addObjectsFromArray:newTweets];
-        [self reloadTable];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [self fetchConnectionError];
-        // Do nothing
-    }];
 }
 
 - (void)updateTimeline: (NSNotification *)notification {

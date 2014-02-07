@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "RestObject.h"
 #import <Parse/Parse.h>
-#import "Tweet.h"
 
 extern NSString *const UserDidLoginNotification;
 extern NSString *const UserDidLogoutNotification;
@@ -24,6 +23,7 @@ extern NSString *const UserDidTweetNotification;
 - (NSURL *)profilePictureURL;
 - (NSString *)name;
 - (NSString *)screenName;
+- (NSString *)userId;
 
 @property (nonatomic, strong) NSDictionary *data;
 

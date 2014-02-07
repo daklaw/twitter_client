@@ -27,6 +27,14 @@
     return self;
 }
 
+- (bool)canRetweet: (User *)user {
+    if ([[user userId] isEqualToString:[self userId]]) {
+        return NO;
+    }
+    
+    return YES;
+}
+
 - (NSString *)text {
     if (self.isRetweet) {
         NSDictionary *retweetStatus = [self.data valueOrNilForKeyPath:@"retweeted_status"];
@@ -43,6 +51,10 @@
         
     }
     return [self.data valueOrNilForKeyPath:@"user"];
+}
+
+- (NSString *)userId {
+    return [self getUserInfo:@"id_str"];
 }
 
 - (NSString *)getUserInfo:(NSString *)key {
@@ -146,6 +158,32 @@
         self.retweetId = [decoder decodeObjectForKey:@"retweetId"];
     }
     return self;
+}
+
+- (void)favorite:(UIButton *)button {
+    if ([button isSelected]) {
+        [button setSelected:NO];
+        self.favorited = NO;
+        self.numFavorites -= 1;
+        
+        // Unfavorite tweet via Twitter API
+        [[TwitterClient instance] unfavoriteTweet:self.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Unfavorite unsuccessful! %@", error);
+        }];
+    }
+    else {
+        [button setSelected:YES];
+        
+        self.favorited = YES;
+        self.numFavorites += 1;
+        
+        // Favorite tweet via Twitter API
+        [[TwitterClient instance] favoriteTweet:self.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Favorite unsuccessful!: %@", error);
+        }];
+    };
 }
 
 @end
