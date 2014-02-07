@@ -7,7 +7,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AuthViewController">
             <connections>
                 <outlet property="loginButton" destination="gGR-bP-pt7" id="iwK-0W-AG5"/>
-                <outlet property="twitterImage" destination="But-vi-IaL" id="dPc-Wh-3V6"/>
+                <outlet property="twitterImage" destination="EzK-gI-PUk" id="9Z2-oV-Pt3"/>
                 <outlet property="view" destination="1" id="3"/>
             </connections>
         </placeholder>
@@ -17,39 +17,45 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGR-bP-pt7">
-                    <rect key="frame" x="75" y="356" width="171" height="35"/>
+                    <rect key="frame" x="75" y="356" width="171" height="36"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="0.33333333333333331" green="0.67450980392156867" blue="0.93333333333333335" alpha="1" colorSpace="deviceRGB"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="35" id="DIf-1G-FWx"/>
+                        <constraint firstAttribute="height" constant="36" id="odk-nA-omb"/>
                     </constraints>
                     <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
-                    <state key="normal" title="Login into Twitter">
+                    <state key="normal" title="Click To Login">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="onLoginButton:" destination="-1" eventType="touchUpInside" id="Ghp-Rd-zYT"/>
                     </connections>
                 </button>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="But-vi-IaL">
-                    <rect key="frame" x="75" y="177" width="171" height="171"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EzK-gI-PUk">
+                    <rect key="frame" x="75" y="150" width="171" height="171"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="171" id="J8X-Ce-w5m"/>
-                        <constraint firstAttribute="width" constant="171" id="ZJb-9N-hOY"/>
+                        <constraint firstAttribute="width" constant="171" id="KGz-pf-sLc"/>
+                        <constraint firstAttribute="height" constant="171" id="exo-Pz-KPt"/>
                     </constraints>
-                </imageView>
+                    <state key="normal" backgroundImage="Twitter_logo_white">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="gGR-bP-pt7" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="75" id="2b9-nN-hgx"/>
-                <constraint firstItem="gGR-bP-pt7" firstAttribute="top" secondItem="But-vi-IaL" secondAttribute="bottom" constant="8" id="3Qf-AA-YVE"/>
-                <constraint firstItem="But-vi-IaL" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="75" id="8cK-0r-Z7s"/>
-                <constraint firstItem="But-vi-IaL" firstAttribute="top" secondItem="1" secondAttribute="top" constant="177" id="kNd-SF-dWI"/>
-                <constraint firstAttribute="trailing" secondItem="gGR-bP-pt7" secondAttribute="trailing" constant="74" id="llM-Ox-1iy"/>
+                <constraint firstItem="gGR-bP-pt7" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="75" id="Hi3-c9-qX2"/>
+                <constraint firstItem="gGR-bP-pt7" firstAttribute="top" secondItem="EzK-gI-PUk" secondAttribute="bottom" constant="35" id="kqz-8V-spf"/>
+                <constraint firstItem="EzK-gI-PUk" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="75" id="mQH-7R-xOa"/>
+                <constraint firstAttribute="trailing" secondItem="gGR-bP-pt7" secondAttribute="trailing" constant="74" id="tvg-6P-ZdU"/>
+                <constraint firstItem="EzK-gI-PUk" firstAttribute="top" secondItem="1" secondAttribute="top" constant="150" id="xjO-d3-ysr"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>
     </objects>
+    <resources>
+        <image name="Twitter_logo_white" width="1139" height="926"/>
+    </resources>
 </document>

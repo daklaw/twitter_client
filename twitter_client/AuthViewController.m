@@ -11,7 +11,7 @@
 @interface AuthViewController ()
 @property (strong, nonatomic) IBOutlet UIButton *loginButton;
 
-@property (strong, nonatomic) IBOutlet UIImageView *twitterImage;
+@property (strong, nonatomic) IBOutlet UIButton *twitterImage;
 - (IBAction)onLoginButton:(id)sender;
 - (void)onError;
 - (void)getUserFromAccessToken;
@@ -34,7 +34,8 @@
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor colorWithRed:(85/255.0) green:(172/255.0) blue:(238/255.0) alpha:1.0]];
     [self.loginButton setBackgroundColor:[UIColor colorWithRed:(85/255.0) green:(172/255.0) blue:(238/255.0) alpha:1.0]];
-    [self.twitterImage setImage:[UIImage imageNamed:@"Twitter_logo_white"]];
+    [self.twitterImage addTarget:self action:@selector(onLoginButton:) forControlEvents:UIControlEventTouchUpInside];
+    //[self.twitterImage setImage:[UIImage imageNamed:@"Twitter_logo_white"]];
     [self getUserFromAccessToken];
     // Do any additional setup after loading the view from its nib.
 }

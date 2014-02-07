@@ -30,22 +30,15 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRootVC) name:UserDidLoginNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRootVC) name:UserDidLogoutNotification object:nil];
-    
-    [Parse setApplicationId:@"gYNu7zRkFp2AvumLqeMlaxBxF0nHuJLbJAEfB5rS"
-                  clientKey:@"1Texmor5QRrDAxw7Ri48N2SE64gYTpOsPttxEMMh"];
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     [[TwitterClient instance] currentUserWithSuccess:^(AFHTTPRequestOperation *operation, id response) {
         [User setCurrentUser:[[User alloc] initWithDictionary:response]];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        AuthViewController *authViewController = [[AuthViewController alloc] init];
-        
-        self.window.rootViewController = authViewController;
     }];
+    
+    self.window.rootViewController = self.currentVC;
     
     return YES;
 }
