@@ -141,7 +141,7 @@
     [cell.retweetButton setSelected:tweet.retweeted];
     [cell.favoriteButton setSelected:tweet.favorited];
     
-    if ([tweet canRetweet:[User currentUser]]) {
+    if (![tweet canRetweet:[User currentUser]]) {
         [cell.retweetButton setEnabled:NO];
     }
     
@@ -228,32 +228,7 @@
 
 -(void)onRetweet:(UIButton *)sender {
     Tweet *tweet = self.tweets[sender.tag];
-    if ([sender isSelected]) {
-        [sender setSelected:NO];
-        tweet.retweeted = NO;
-        tweet.numRetweets -= 1;
-        
-        // Delete retweet via Twitter API
-        [[TwitterClient instance] destroyTweet:tweet.retweetId success:^(AFHTTPRequestOperation *operation, id response) {
-            NSLog(@"Successful removal of retweet");
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Unsuccessful removal of retweet %@", error);
-        }];
-        
-    }
-    else {
-        [sender setSelected:YES];
-        tweet.retweeted = YES;
-        tweet.numRetweets += 1;
-        
-        // Retweet via Twitter API
-        [[TwitterClient instance] retweetTweet:tweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
-            tweet.retweeted = YES;
-            tweet.retweetId = [response objectForKey:@"id_str"];
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Unsucccessful retweet: %@", error);
-        }];
-    }
+    [tweet retweet:sender];
     [self reloadTable];
 }
 
@@ -372,6 +347,11 @@
 - (void) reloadTable {
     [self.tableView reloadData];
     [self saveTweets];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.tableView reloadData]; // to reload selected cell
 }
 
 

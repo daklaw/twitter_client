@@ -28,7 +28,8 @@
 }
 
 - (bool)canRetweet: (User *)user {
-    if ([[user userId] isEqualToString:[self userId]]) {
+    if ([[user userId] isEqualToString:self.userId]) {
+        NSLog(@"%@ - %@", self.userId, [user userId]);
         return NO;
     }
     
@@ -170,6 +171,7 @@
         [[TwitterClient instance] unfavoriteTweet:self.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             NSLog(@"Unfavorite unsuccessful! %@", error);
+            NSLog(@"%@", self.tweetId);
         }];
     }
     else {
@@ -184,6 +186,36 @@
             NSLog(@"Favorite unsuccessful!: %@", error);
         }];
     };
+}
+
+- (void)retweet: (UIButton *)button {
+    if (self.retweeted) {
+        [button setSelected:NO];
+        self.retweeted = NO;
+        self.numRetweets -= 1;
+        
+        // Delete retweet via Twitter API
+        [[TwitterClient instance] destroyTweet:self.retweetId success:^(AFHTTPRequestOperation *operation, id response) {
+            NSLog(@"Successful removal of retweet");
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Unsuccessful removal of retweet %@", error);
+        }];
+        
+    }
+    else {
+        [button setSelected:YES];
+        self.retweeted = YES;
+        self.numRetweets += 1;
+        
+        // Retweet via Twitter API
+        [[TwitterClient instance] retweetTweet:self.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
+            self.retweeted = YES;
+            self.retweetId = [response objectForKey:@"id_str"];
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"Unsucccessful retweet: %@", error);
+        }];
+    }
+
 }
 
 @end

@@ -34,6 +34,7 @@
 - (bool)isRetweet;
 - (bool)canRetweet: (User *)user;
 - (void)favorite:(UIButton *)button;
+- (void)retweet: (UIButton *)button;
 
 
 @end

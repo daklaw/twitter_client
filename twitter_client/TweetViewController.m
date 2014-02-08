@@ -99,35 +99,13 @@
 }
 
 - (IBAction)onRetweet:(id)sender {
-    if ([self.retweetButton isSelected]) {
-        [self.retweetButton setSelected:NO];
-        self.tweet.numRetweets -= 1;
-        self.numRetweetLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tweet.numRetweets];
-        
-        // Delete retweet via Twitter API
-        [[TwitterClient instance] destroyTweet:self.tweet.retweetId success:^(AFHTTPRequestOperation *operation, id response) {
-            self.tweet.retweeted = NO;
-            self.tweet.retweetId = nil;
-
-            NSLog(@"Successful removal of retweet");
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Unsuccessful removal of retweet %@", error);
-        }];
+    if (self.tweet.retweeted) {
+        self.numRetweetLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tweet.numRetweets-1];
     }
     else {
-        [self.retweetButton setSelected:YES];
-        self.tweet.numRetweets += 1;
-        self.numRetweetLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tweet.numRetweets];
-        
-        // Retweet it via Twitter API
-        [[TwitterClient instance] retweetTweet:self.tweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
-            self.tweet.retweeted = YES;
-            self.tweet.retweetId = [response objectForKey:@"id_str"];
-
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Unsucccessful retweet: %@", error);
-        }];
+        self.numRetweetLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tweet.numRetweets+1];
     }
+    [self.tweet retweet:self.retweetButton];
 
 }
 
@@ -138,32 +116,13 @@
 }
 
 - (IBAction)onFavorite:(id)sender {
-    if ([self.favoriteButton isSelected]) {
-        [self.favoriteButton setSelected:NO];
-        self.tweet.favorited = NO;
-        self.tweet.numFavorites -= 1;
-        self.numFavoriteLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tweet.numFavorites];
-        
-        // Unfavorite tweet via Twitter API
-        [[TwitterClient instance] unfavoriteTweet:self.tweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Unfavorite unsuccessful! %@", error);
-        }];
+    if ([self.tweet favorited]) {
+        self.numFavoriteLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tweet.numFavorites-1];
     }
     else {
-        [self.favoriteButton setSelected:YES];
-        
-        self.tweet.favorited = YES;
-        self.tweet.numFavorites += 1;
-        self.numFavoriteLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tweet.numFavorites];
-        
-        // Favorite tweet via Twitter API
-        [[TwitterClient instance] favoriteTweet:self.tweet.tweetId success:^(AFHTTPRequestOperation *operation, id response) {
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"Favorite unsuccessful!: %@", error);
-        }];
+        self.numFavoriteLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tweet.numFavorites+1];
     }
-    
+    [self.tweet favorite:self.favoriteButton];
 }
 
 @end
